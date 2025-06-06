@@ -4,7 +4,7 @@ import image1 from '../images/login.png';
 import { useNavigate } from 'react-router-dom';
 
 
-import IvendEdit from '../UserformsModals/ivendEdit';
+import IvendEdit from '../UserformsModals/leaveEdit';
 
 
 import { IoLogOutSharp } from "react-icons/io5";

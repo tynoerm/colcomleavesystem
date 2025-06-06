@@ -6,7 +6,7 @@ import { IoLogOutSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 
-import IvendEdit from '../UserformsModals/ivendEdit';
+import IvendEdit from '../UserformsModals/leaveEdit';
 
 
 const collections = [

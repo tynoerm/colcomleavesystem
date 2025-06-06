@@ -3,23 +3,28 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RiLoginBoxFill } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import image1 from './images/login.png';
+import { useNavigate } from 'react-router-dom';
+import image1 from './images/colcom.jpg';
 
-
-import { IoCreate } from "react-icons/io5";
 import { IoLogOutSharp } from "react-icons/io5";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
 function UserManagement() {
     const [fullName, setFullName] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [employerNumber, setEmployerNumber] = useState('');
+    const [nationalId, setNationalId] = useState('');
+    const [password, setPassword] = useState('');  // will mirror nationalId
     const [role, setRole] = useState('');
     const [department, setDepartment] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate();
+
+    // Sync password with nationalId whenever nationalId changes
+    const handleNationalIdChange = (e) => {
+        setNationalId(e.target.value);
+        setPassword(e.target.value);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,8 +33,9 @@ function UserManagement() {
         try {
             const response = await axios.post('http://localhost:3001/users/create-user', {
                 fullName,
-                username,
-                password,
+                employerNumber,
+                password,   // password == nationalId
+                nationalId,
                 role,
                 department,
             });
@@ -37,163 +43,151 @@ function UserManagement() {
             if (response.status === 201 || response.status === 200) {
                 toast.success('User registered successfully');
 
-                // Prepare user data to send on navigation
                 const userData = {
                     fullName,
-                    username,
+                    employerNumber,
                     password,
+                    nationalId,
                     role,
                     department,
                 };
 
-                // Clear form inputs
+                // Reset form fields
                 setFullName('');
-                setUsername('');
+                setEmployerNumber('');
+                setNationalId('');
                 setPassword('');
                 setRole('');
                 setDepartment('');
 
-                // Navigate to '/users' and pass user data
+                // Navigate to users page with new user data
                 navigate('/users', { state: { newUser: userData } });
             } else {
                 toast.error('Registration failed');
             }
         } catch (err) {
-            if (err.response?.data?.message) {
-                toast.error(err.response.data.message);
-            } else {
-                toast.error('Something went wrong');
-            }
+            toast.error(err.response?.data?.message || 'Something went wrong');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleBack = () => {
-    navigate(-1);
-  };
+    const handleBack = () => navigate(-1);
 
     return (
         <>
-            <nav className="navbar border-bottom shadow-lg p-1 mb-0 rounded" style={{ backgroundColor: 'black' }}>
-  <div className="container-fluid d-flex justify-content-between align-items-center">
-    <span className="navbar-brand text-white d-flex align-items-center">
-      <img
-        src={image1}
-        alt="Login Icon"
-        style={{ width: '40px', height: '40px', objectFit: 'contain' }}
-      />
-      &nbsp;<b>ASSOCIATED MEAT PACKERS</b>
-    </span>
+            <nav className="navbar border-bottom shadow-lg p-1 mb-0 rounded" style={{ backgroundColor: 'white' }}>
+                <div className="container-fluid d-flex justify-content-between align-items-center">
+                    <span className="navbar-brand text-black d-flex align-items-center">
+                        <img src={image1} alt="Login Icon" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+                        &nbsp;<b>REGISTER NEW USER</b>
+                    </span>
 
-    <div className="d-flex gap-2">
-      <button onClick={handleBack} className="btn btn-primary">
-        <b><IoMdArrowRoundBack /> Back</b>
-      </button>
-      <button className="btn btn-danger" onClick={() => {
-        localStorage.clear();
-        navigate('/');
-      }}>
-        <b><IoLogOutSharp /> Logout</b>
-      </button>
-    </div>
-  </div>
-</nav>
-
-        
-
+                    <div className="d-flex gap-2">
+                        <button onClick={handleBack} className="btn btn-primary">
+                            <b><IoMdArrowRoundBack /> Back</b>
+                        </button>
+                        <button className="btn btn-danger" onClick={() => {
+                            localStorage.clear();
+                            navigate('/');
+                        }}>
+                            <b><IoLogOutSharp /> Logout</b>
+                        </button>
+                    </div>
+                </div>
+            </nav>
 
             <div className="d-flex justify-content-center align-items-center bg-light" style={{ height: 'calc(100vh - 70px)' }}>
-                <div className="card p-3 shadow" style={{ width: '400px' }}>
+                <div className="card p-4 shadow" style={{ width: '80%', maxWidth: '700px' }}>
                     <ToastContainer />
                     <h5 className="text-center mb-3">
                         <b><RiLoginBoxFill /> ADD A NEW USER</b>
                     </h5>
 
                     <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label>Full Name:</label>
-                            <input
-                                type="text"
-                                placeholder="Full Name"
-                                className="form-control"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                                required
-                            />
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label>Full Name:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+                                <label>Employer Number:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={employerNumber}
+                                    onChange={(e) => setEmployerNumber(e.target.value)}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label>Username:</label>
-                            <input
-                                type="text"
-                                placeholder="Username"
-                                className="form-control"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                            />
+                        <div className="row">
+                            {/* Password input removed, password is set automatically */}
+                            
+                            <div className="col-md-6 mb-3">
+                                <label>National ID:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={nationalId}
+                                    onChange={handleNationalIdChange}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label>Password:</label>
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                className="form-control"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label>Role:</label>
+                                <select
+                                    className="form-control"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    required
+                                >
+                                    <option value="">-- Select Role --</option>
+                                    <option value="client">Client</option>
+                                    <option value="deptmanager">Department Manager</option>
+                                    <option value="hr">Human Resources</option>
+                                    <option value="itmanagement">IT Management</option>
+                                </select>
+                            </div>
+
+                            <div className="col-md-6 mb-3">
+                                <label>Department:</label>
+                                <select
+                                    className="form-control"
+                                    value={department}
+                                    onChange={(e) => setDepartment(e.target.value)}
+                                    required
+                                >
+                                    <option value="">-- Select Department --</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="operations">Operations</option>
+                                    <option value="sales">Sales</option>
+                                    <option value="itdepartment">IT Department</option>
+                                    <option value="retailshops">Retail Shops</option>
+                                    <option value="nec">NEC</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div className="mb-3">
-                            <label>Role:</label>
-                            <select
-                                className="form-control"
-                                value={role}
-                                onChange={(e) => setRole(e.target.value)}
-                                required
-                            >
-                                <option value="">-- Select Role --</option>
-                                <option value="client">Client</option>
-                                <option value="retail">Retail Shops</option>
-                                <option value="deptmanager">Department Manager</option>
-                                <option value="itmanagement">IT Management</option>
-                                <option value="itmanager">IT Manager</option>
-                                <option value="itexec">IT Executive</option>
-                            </select>
-                        </div>
-
-                        <div className="mb-3">
-                            <label>Department:</label>
-                            <select
-                                className="form-control"
-                                value={department}
-                                onChange={(e) => setDepartment(e.target.value)}
-                                required
-                            >
-                                <option value="">-- Select Department --</option>
-                                <option value="finance">Finance</option>
-                                <option value="operations">Operations</option>
-                                <option value="sales">Sales</option>
-                                <option value="itdepartment">IT Department </option>
-                                <option value="retailshops">Retail Shops</option>
-                            </select>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="btn btn-dark w-100"
-                            disabled={loading}
-                        >
+                        <button type="submit" className="btn btn-dark w-100" disabled={loading}>
                             {loading ? 'Creating...' : 'CREATE'}
                         </button>
                     </form>
                 </div>
 
                 <footer className="text-white bg-dark text-center p-2 fixed-bottom">
-                    &copy; Associated Meat Packers. All rights reserved.
+                    &copy; Colcom Foods Private Limited. All rights reserved.
                 </footer>
             </div>
         </>

@@ -155,8 +155,7 @@ const FormmanagementUsers = () => {
   </div>
 </div>
 
-      {loading && <p>Loading data...</p>}
-      {error && <p className="text-danger">{error}</p>}
+   
 
       <table className="table table-striped table-bordered mt-3">
         <thead className="table-danger">

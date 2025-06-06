@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import image1 from '../images/login.png';
 
-import IvendEdit from '../UserformsModals/ivendEdit';
+import IvendEdit from '../UserformsModals/leaveEdit';
 
 
 import { IoLogOutSharp } from "react-icons/io5";
@@ -94,7 +94,7 @@ const ITExecutive = () => {
 
 
 
-  
+
   useEffect(() => {
     if (!collectionSelected) return;
 

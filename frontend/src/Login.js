@@ -7,8 +7,8 @@ import { RiLoginBoxFill } from 'react-icons/ri';
 import image1 from './images/colcom.jpg';
 
 function Login({ setLoggedIn, login }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [employeeNumber, setEmployeeNumber] = useState('');
+  const [nationalID, setNationalID] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -18,13 +18,13 @@ function Login({ setLoggedIn, login }) {
 
     try {
       const response = await axios.post('http://localhost:3001/users/login', {
-        username,
-        password,
+        employeeNumber,
+        nationalID,
       });
 
       console.log('Login response:', response.data);
 
-      const { role, department, division, username: returnedUsername } = response.data.user;
+      const { role, department, division, employeeNumber: returnedEmployeeNumber } = response.data.user;
 
       if (response.status === 200 && role) {
         // Clear previous session
@@ -34,7 +34,7 @@ function Login({ setLoggedIn, login }) {
         login(role);
 
         localStorage.setItem('role', role.toLowerCase());
-        localStorage.setItem('username', returnedUsername);
+        localStorage.setItem('employeeNumber', returnedEmployeeNumber);
         localStorage.setItem('department', department);
         localStorage.setItem('division', division);
 
@@ -57,19 +57,18 @@ function Login({ setLoggedIn, login }) {
   return (
     <>
       <nav className="navbar border-bottom shadow-lg p-1 mb-0 rounded bg-light">
-  <div className="container-fluid">
-    <span className="navbar-brand text-dark">
-      <img
-        src={image1}
-        alt="Login Icon"
-        style={{ width: '40px', height: '40px', objectFit: 'contain' }}
-      />
-      &nbsp;
-      <b>COLCOM FOODS PRIVATE LIMITED LEAVE SYSTEM</b>
-    </span>
-  </div>
-</nav>
-
+        <div className="container-fluid">
+          <span className="navbar-brand text-dark">
+            <img
+              src={image1}
+              alt="Login Icon"
+              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+            />
+            &nbsp;
+            <b>COLCOM FOODS PRIVATE LIMITED LEAVE SYSTEM</b>
+          </span>
+        </div>
+      </nav>
 
       <div
         className="d-flex justify-content-center align-items-center bg-light"
@@ -84,25 +83,25 @@ function Login({ setLoggedIn, login }) {
             <div className="mb-3">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Employee Number"
                 className="form-control"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={employeeNumber}
+                onChange={(e) => setEmployeeNumber(e.target.value)}
                 required
               />
             </div>
             <div className="mb-3">
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="National ID"
                 className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={nationalID}
+                onChange={(e) => setNationalID(e.target.value)}
                 required
               />
             </div>
             <button type="submit" className="btn btn-danger w-100" disabled={loading}>
-            <b>  {loading ? 'Logging in...' : 'LOGIN'}</b>
+              <b>{loading ? 'Logging in...' : 'LOGIN'}</b>
             </button>
             <div className="text-center mt-2">
               <Link to="/UserManagement"><i></i></Link>
@@ -110,10 +109,9 @@ function Login({ setLoggedIn, login }) {
           </form>
         </div>
 
-    <footer className="text-white bg-dark text-center p-2 position-fixed bottom-0 w-100">
-  &copy; Colcom Foods Private Limited. All rights reserved.
-</footer>
-
+        <footer className="text-white bg-dark text-center p-2 position-fixed bottom-0 w-100">
+          &copy; Colcom Foods Private Limited. All rights reserved.
+        </footer>
       </div>
     </>
   );

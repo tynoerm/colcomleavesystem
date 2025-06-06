@@ -41,7 +41,7 @@ const LeaveApplicationModal = () => {
     };
 
     try {
-      await axios.post("http://localhost:3001/leave-applications", leaveApplication, {
+      await axios.post("http://localhost:3001/leaveApplications/leave-applications", leaveApplication, {
         headers: { "Content-Type": "application/json" }
       });
       toast.success("Leave application submitted successfully!");
